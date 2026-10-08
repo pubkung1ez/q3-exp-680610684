@@ -24,7 +24,7 @@ export function AddItemDialog() {
     e.preventDefault();
     if (!title || !amount) return;
 
-    // addExpense(title, parseFloat(amount), category);
+    addExpense(title, parseFloat(amount), category);
     setTitle("");
     setAmount("");
     setOpen(false);

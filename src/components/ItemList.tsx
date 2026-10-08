@@ -1,4 +1,4 @@
-import { useItemStore } from "@/store/dataStore";
+﻿import { useItemStore } from "@/store/dataStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,22 +13,27 @@ import {
 import { Trash } from "lucide-react";
 
 export function ItemList() {
-  const { expenses } = useItemStore();
+  const expenses = useItemStore((state) => state.expenses);
+  const deleteExpense = useItemStore((state) => state.deleteExpense);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Recent Expenses</CardTitle>
+    <Card className="overflow-hidden border-slate-200 shadow-sm">
+      <CardHeader className="border-b border-slate-200 bg-slate-50/80 px-6 py-4">
+        <CardTitle className="font-semibold">
+          Recent Expenses
+        </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-              <TableHead className="text-right"></TableHead>
+            <TableRow className="bg-slate-50 hover:bg-slate-50">
+              <TableHead className="px-6 py-4 text-slate-600">Date</TableHead>
+              <TableHead className="px-6 py-4 text-slate-600">Title</TableHead>
+              <TableHead className="px-6 py-4 text-slate-600">Category</TableHead>
+              <TableHead className="px-6 py-4 text-right text-slate-600">
+                Amount
+              </TableHead>
+              <TableHead className="px-6 py-4 text-right text-slate-600" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -36,33 +41,45 @@ export function ItemList() {
               <TableRow>
                 <TableCell
                   colSpan={5}
-                  className="text-center text-muted-foreground py-6"
+                  className="py-8 text-center text-muted-foreground"
                 >
                   No expenses recorded yet.
                 </TableCell>
               </TableRow>
             ) : (
-              // replace the following hardcoded row with the dynamic mapping of data items
-              <TableRow>
-                <TableCell className="text-muted-foreground">
-                  2026-10-05
-                </TableCell>
-                <TableCell className="font-medium">ซื้อของ 7-11</TableCell>
-                <TableCell>
-                  <Badge variant="outline">Food</Badge>
-                </TableCell>
-                <TableCell className="text-right font-semibold">฿120</TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    className="text-white bg-red-500 hover:bg-red-600 text-white"
-                    variant="ghost"
-                    size="sm"
-                  >
-                    <Trash className="h-4 w-4" />
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
+              expenses.map((item) => (
+                <TableRow key={item.id} className="border-b border-slate-200">
+                  <TableCell className="px-6 py-4">
+                    {item.date}
+                  </TableCell>
+                  <TableCell className="px-6 py-4 font-medium">
+                    {item.title}
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
+                    <Badge
+                      variant="secondary"
+                      className="rounded-md bg-slate-200 hover:bg-slate-200"
+                    >
+                      {item.category}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="px-6 py-4 text-right font-semibold">
+                    ฿{item.amount.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="px-6 py-4 text-right">
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      className="h-9 rounded-md bg-red-500 px-3 text-white hover:bg-red-600"
+                      onClick={() => deleteExpense(item.id)}
+                    >
+                      <Trash className="mr-2 h-4 w-4" />
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
             )}
           </TableBody>
         </Table>
